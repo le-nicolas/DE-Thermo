@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from physics import ThermalSimulation
 from visualization import DynamicPlot
+from utils import validate_positive_float, get_simulation_defaults, generate_tooltips, apply_tooltips
 
 class ThermalSimulatorApp:
     def __init__(self, root):
@@ -35,6 +36,15 @@ class ThermalSimulatorApp:
 
         self.run_button = ttk.Button(self.input_frame, text="Run Simulation", command=self.run_simulation)
         self.run_button.grid(row=len(labels), column=0, columnspan=2, pady=10)
+        
+tooltips = generate_tooltips()
+widgets = [
+    (self.entries[0], "mass"),
+    (self.entries[1], "initial_temp"),
+    (self.entries[2], "fridge_temp"),
+    (self.entries[3], "htc")
+]
+apply_tooltips(widgets, tooltips)
 
     def run_simulation(self):
         try:
