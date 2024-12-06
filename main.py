@@ -1,76 +1,76 @@
+# main.py - Enhanced with parallel processing, ML, and clustering integration
+
+import numpy as np
 import tkinter as tk
-from tkinter import ttk
-from physics import ThermalSimulation
-from visualization import DynamicPlot
-from utils import validate_positive_float, get_simulation_defaults, generate_tooltips, apply_tooltips
+from tkinter import messagebox
+import matplotlib.pyplot as plt
+from utils import generate_simulation_data, train_regression_model, perform_clustering
 
-class ThermalSimulatorApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Thermal Dynamics Simulator")
+def run_simulation():
+    """Run simulations for various input configurations."""
+    try:
+        mass = float(entry_mass.get())
+        initial_temp = float(entry_initial_temp.get())
+        fridge_temp = float(entry_fridge_temp.get())
+        htc = float(entry_htc.get())
+        area = float(entry_area.get())
+    except ValueError:
+        messagebox.showerror("Input Error", "Please provide valid numerical inputs.")
+        return
 
-        # Create input frame
-        self.input_frame = ttk.LabelFrame(self.root, text="Input Parameters")
-        self.input_frame.grid(row=0, column=0, padx=10, pady=10)
+    param_grid = [
+        (mass, initial_temp, fridge_temp, htc, area)
+        for mass in np.linspace(mass - 10, mass + 10, 5)
+        for fridge_temp in np.linspace(fridge_temp - 5, fridge_temp + 5, 5)
+    ]
 
-        self.create_inputs()
+    results = generate_simulation_data(param_grid)
 
-        # Placeholder for dynamic plot
-        self.plot_frame = ttk.LabelFrame(self.root, text="Simulation Results")
-        self.plot_frame.grid(row=1, column=0, padx=10, pady=10)
+    valid_results = [r for r in results if r[1] is not None]
 
-        self.simulation = None
-        self.plot = None
+    if valid_results:
+        clusters, kmeans = perform_clustering(valid_results)
+        model = train_regression_model(valid_results)
+        plt.scatter(
+            [x[0] for x in valid_results],
+            [x[1] for x in valid_results],
+            c=clusters,
+            cmap="viridis"
+        )
+        plt.title("Simulation Results Clustering")
+        plt.xlabel("Mass (g)")
+        plt.ylabel("Time to Freeze (s)")
+        plt.colorbar(label="Cluster")
+        plt.show()
+        messagebox.showinfo("Simulation Complete", "Simulations and clustering completed successfully!")
+    else:
+        messagebox.showwarning("Simulation Warning", "No valid simulation results.")
 
-    def create_inputs(self):
-        labels = ["Mass (kg):", "Initial Temp (°C):", "Fridge Temp (°C):", "Heat Transfer Coeff. (W/m²·K):"]
-        defaults = ["0.5", "90", "4", "10"]
-        self.entries = []
+# GUI Setup
+root = tk.Tk()
+root.title("Thermal Dynamics Simulator")
 
-        for i, (label, default) in enumerate(zip(labels, defaults)):
-            ttk.Label(self.input_frame, text=label).grid(row=i, column=0, sticky="w", padx=5, pady=5)
-            entry = ttk.Entry(self.input_frame)
-            entry.grid(row=i, column=1, padx=5, pady=5)
-            entry.insert(0, default)
-            self.entries.append(entry)
+tk.Label(root, text="Mass (g):").grid(row=0, column=0, sticky="e")
+entry_mass = tk.Entry(root)
+entry_mass.grid(row=0, column=1)
 
-        self.run_button = ttk.Button(self.input_frame, text="Run Simulation", command=self.run_simulation)
-        self.run_button.grid(row=len(labels), column=0, columnspan=2, pady=10)
-        
-tooltips = generate_tooltips()
-widgets = [
-    (self.entries[0], "mass"),
-    (self.entries[1], "initial_temp"),
-    (self.entries[2], "fridge_temp"),
-    (self.entries[3], "htc")
-]
-apply_tooltips(widgets, tooltips)
+tk.Label(root, text="Initial Temp (°C):").grid(row=1, column=0, sticky="e")
+entry_initial_temp = tk.Entry(root)
+entry_initial_temp.grid(row=1, column=1)
 
-    def run_simulation(self):
-        try:
-            # Collect inputs
-            mass = float(self.entries[0].get())
-            initial_temp = float(self.entries[1].get())
-            fridge_temp = float(self.entries[2].get())
-            htc = float(self.entries[3].get())
+tk.Label(root, text="Fridge Temp (°C):").grid(row=2, column=0, sticky="e")
+entry_fridge_temp = tk.Entry(root)
+entry_fridge_temp.grid(row=2, column=1)
 
-            # Clear previous results
-            if self.plot:
-                self.plot.clear_plot()
+tk.Label(root, text="Heat Transfer Coefficient (W/m²°C):").grid(row=3, column=0, sticky="e")
+entry_htc = tk.Entry(root)
+entry_htc.grid(row=3, column=1)
 
-            # Run the simulation
-            self.simulation = ThermalSimulation(mass, initial_temp, fridge_temp, htc)
-            time, temperature = self.simulation.run()
+tk.Label(root, text="Surface Area (m²):").grid(row=4, column=0, sticky="e")
+entry_area = tk.Entry(root)
+entry_area.grid(row=4, column=1)
 
-            # Visualize results
-            self.plot = DynamicPlot(self.plot_frame)
-            self.plot.plot_results(time, temperature)
+simulate_button = tk.Button(root, text="Run Simulation", command=run_simulation)
+simulate_button.grid(row=5, column=0, columnspan=2)
 
-        except ValueError:
-            tk.messagebox.showerror("Input Error", "Please provide valid numerical inputs.")
-
-# Main execution
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = ThermalSimulatorApp(root)
-    root.mainloop()
+root.mainloop()
