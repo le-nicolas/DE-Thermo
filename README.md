@@ -42,6 +42,8 @@ GUI features:
 
 - Parameter input form (mass, temperatures, area, HTC, target, duration, step)
 - One-click simulation run
+- Real water animation panel (wavy liquid, freezing ice growth, steam/frost transitions)
+- Animation behavior changes with scenario values (mass, area, HTC, temperatures)
 - Live trajectory chart with `0 C` and target reference lines
 - Milestone summary (`t(0C)`, freeze completion, target reachability)
 - Export last run as CSV
@@ -134,6 +136,7 @@ This repo now includes executed outputs in `results/`:
 - `results/cli_preview.svg`
 - `results/cli_preview.txt`
 - `results/single_trajectory.svg`
+- `results/water_animation.gif`
 - `results/batch_report.md`
 - `results/batch_summary.csv`
 - `results/batch_summary.json`
@@ -145,6 +148,16 @@ This repo now includes executed outputs in `results/`:
 ### Result preview
 
 ![DE-Thermo trajectory preview](results/single_trajectory.svg)
+
+### Water and Freezing Animation Preview
+
+![DE-Thermo water cooling and freezing animation](results/water_animation.gif)
+
+Regenerate this GIF from real simulation output:
+
+```bash
+./scripts/render-water-animation-gif.ps1 -InputJson results/single_run.json -OutputGif results/water_animation.gif
+```
 
 ### CLI usage preview
 

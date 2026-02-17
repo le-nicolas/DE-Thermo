@@ -4,3 +4,4 @@
 /DEThermo.Gui/bin
 /DEThermo.Gui/obj
 *.csproj.user
+/results/test_anim.gif
