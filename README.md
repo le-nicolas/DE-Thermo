@@ -1,4 +1,4 @@
-# DE-Thermo (C# Upgrade)
+# Differential Equation and thermodynamics combination
 
 DE-Thermo was upgraded from a Python prototype into a practical C# CLI for thermal planning and reliability analysis.
 
