@@ -14,6 +14,7 @@ DE-Thermo was upgraded from a Python prototype into a practical C# CLI for therm
   - `batch`: run many scenarios from JSON
   - `optimize`: find minimum HTC for a freeze deadline
   - `monte-carlo`: uncertainty and probability of meeting deadlines
+- Includes a desktop GUI (`DEThermo.Gui`) for interactive simulation and visualization.
 - Outputs for decision workflows: CSV, JSON, and Markdown report.
 
 ## Stack
@@ -26,7 +27,24 @@ DE-Thermo was upgraded from a Python prototype into a practical C# CLI for therm
 
 ```bash
 dotnet build DEThermo.Cli/DEThermo.Cli.csproj -c Release
+dotnet build DEThermo.Gui/DEThermo.Gui.csproj -c Release
 ```
+
+## GUI app
+
+Launch the desktop simulator:
+
+```bash
+dotnet run --project DEThermo.Gui --configuration Release
+```
+
+GUI features:
+
+- Parameter input form (mass, temperatures, area, HTC, target, duration, step)
+- One-click simulation run
+- Live trajectory chart with `0 C` and target reference lines
+- Milestone summary (`t(0C)`, freeze completion, target reachability)
+- Export last run as CSV
 
 ## Usage
 
@@ -113,6 +131,9 @@ See `scenarios/sample_scenarios.json`.
 
 This repo now includes executed outputs in `results/`:
 
+- `results/cli_preview.svg`
+- `results/cli_preview.txt`
+- `results/single_trajectory.svg`
 - `results/batch_report.md`
 - `results/batch_summary.csv`
 - `results/batch_summary.json`
@@ -120,6 +141,22 @@ This repo now includes executed outputs in `results/`:
 - `results/monte_carlo_12h.json`
 - `results/single_run.json`
 - `results/single_trajectory.csv`
+
+### Result preview
+
+![DE-Thermo trajectory preview](results/single_trajectory.svg)
+
+### CLI usage preview
+
+Command used:
+
+```bash
+dotnet run --project DEThermo.Cli --configuration Release -- simulate --name "Ceramic Mug" --mass-kg 0.35 --initial-temp-c 90 --ambient-temp-c -18 --area-m2 0.03 --htc-w-m2k 8 --target-temp-c -12 --duration-s 21600 --step-s 30 --csv-output results/single_trajectory.csv --json-output results/single_run.json
+```
+
+Actual output:
+
+![DE-Thermo CLI output preview](results/cli_preview.svg)
 
 ## Publish workflow
 

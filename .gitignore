@@ -1,3 +1,6 @@
 /target
 /DEThermo.Cli/bin
 /DEThermo.Cli/obj
+/DEThermo.Gui/bin
+/DEThermo.Gui/obj
+*.csproj.user

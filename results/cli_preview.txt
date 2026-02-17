@@ -1,0 +1,8 @@
+Scenario: Ceramic Mug
+Target temperature: -12.00 C
+Time to hit 0C: 10937.9 s (182.3 min)
+Time to complete freeze: 37973.8 s (632.9 min)
+Time to reach target: 41338.3 s (689.0 min)
+Generated 721 trajectory points
+Wrote trajectory CSV to results/single_trajectory.csv
+Wrote simulation JSON to results/single_run.json
