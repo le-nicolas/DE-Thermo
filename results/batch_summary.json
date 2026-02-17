@@ -1,0 +1,36 @@
+{
+  "input": "scenarios/sample_scenarios.json",
+  "target_temp_c": -12,
+  "duration_s": 21600,
+  "step_s": 60,
+  "records": [
+    {
+      "name": "Ceramic Mug",
+      "reaches_zero_s": 10937.944993191764,
+      "freeze_complete_s": 37973.82462282139,
+      "reaches_target_s": 41338.32475686748,
+      "reason_unreachable": null
+    },
+    {
+      "name": "Espresso Shot",
+      "reaches_zero_s": 3788.557316326855,
+      "freeze_complete_s": 13058.001760771298,
+      "reaches_target_s": 14211.544663872814,
+      "reason_unreachable": null
+    },
+    {
+      "name": "Open Pan",
+      "reaches_zero_s": 4435.170210588552,
+      "freeze_complete_s": 15028.821004239346,
+      "reaches_target_s": 16118.69844991712,
+      "reason_unreachable": null
+    },
+    {
+      "name": "Vacuum Flask",
+      "reaches_zero_s": 41725.024949576626,
+      "freeze_complete_s": 147661.53288608455,
+      "reaches_target_s": 160844.88035010186,
+      "reason_unreachable": null
+    }
+  ]
+}

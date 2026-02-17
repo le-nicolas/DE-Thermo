@@ -1,87 +1,130 @@
-![Screenshot 2024-12-02 235518](https://github.com/user-attachments/assets/f3b058b2-8572-42a2-b770-453f35043c8c)
-# Differential Equations and Thermodynamics
->Cool AI generated pamphlet sort of :)
+# DE-Thermo (C# Upgrade)
 
-Imagine you have a big puzzle to solve. Differential Equations are like secret codes or instructions that tell us how things change over time. Think about your toy car rolling down a hill—it starts slow, speeds up, and then might slow down again. A Differential Equation helps us understand and predict how fast or slow that car will move at any point in time.
+DE-Thermo was upgraded from a Python prototype into a practical C# CLI for thermal planning and reliability analysis.
 
-Now, Thermodynamics is all about heat, energy, and how they move around. It's like when you have a warm cup of chocolate milk. If you put it in a cold room, it'll cool down. Thermodynamics helps us understand how and why the milk cools down.
+## What is better now
 
-When we mix Differential Equations with Thermodynamics, it’s like using those secret codes to solve a puzzle about heat and energy. For example, if we want to know how fast your hot chocolate cools down in a cold room, we can use a Differential Equation. This equation will take into account how fast heat leaves your drink and goes into the air.
+- No GUI lock-in: full terminal workflow.
+- Better physics model:
+  - liquid cooling (Newton law)
+  - latent heat plateau during freezing
+  - post-freeze ice cooling
+- Useful engineering commands:
+  - `simulate`: full trajectory + milestone timings
+  - `batch`: run many scenarios from JSON
+  - `optimize`: find minimum HTC for a freeze deadline
+  - `monte-carlo`: uncertainty and probability of meeting deadlines
+- Outputs for decision workflows: CSV, JSON, and Markdown report.
 
-So, in simple terms:
+## Stack
 
-Differential Equations = Instructions on how things change.
+- Language: C# (.NET 9)
+- Parallel execution: `Parallel.For`
+- Serialization: `System.Text.Json`
 
-Thermodynamics = Rules about heat and energy.
+## Quick start
 
-Mix them together, and we get the magic recipe to understand how heat moves around and changes over time!
+```bash
+dotnet build DEThermo.Cli/DEThermo.Cli.csproj -c Release
+```
 
->now lets explain the technical deep dive, in-depth analysis of my creation :D
+## Usage
 
-# Simulating Thermal Dynamics: From Coffee Cooling to Robust Modeling
+Run one simulation:
 
-This blog walks through the journey of creating a robust thermal dynamics simulation tool. We started with a simple question—How long does it take for coffee to freeze in a refrigerator?
+```bash
+dotnet run --project DEThermo.Cli --configuration Release -- simulate \
+  --name "Ceramic Mug" \
+  --mass-kg 0.35 \
+  --initial-temp-c 90 \
+  --ambient-temp-c -18 \
+  --area-m2 0.03 \
+  --htc-w-m2k 8 \
+  --target-temp-c -12 \
+  --duration-s 21600 \
+  --step-s 30 \
+  --csv-output results/single_trajectory.csv \
+  --json-output results/single_run.json
+```
 
-The Spark: A Simple Problem with Thermodynamic Roots
-The initial challenge was to simulate the cooling of coffee using Newton’s Law of Cooling and basic thermodynamics equations. This required solving ordinary differential equations (ODEs) to determine the coffee's temperature over time, with the additional complexity of freezing and phase changes.
+Run a batch:
 
-Our early implementation involved manual inputs, straightforward calculations, and a static graph. While functional, it lacked scalability, user-friendliness, and advanced visualizations.
+```bash
+dotnet run --project DEThermo.Cli --configuration Release -- batch \
+  --input scenarios/sample_scenarios.json \
+  --csv-output results/batch_summary.csv \
+  --json-output results/batch_summary.json \
+  --report-output results/batch_report.md
+```
 
+Optimize HTC for a freeze deadline:
 
+```bash
+dotnet run --project DEThermo.Cli --configuration Release -- optimize \
+  --mass-kg 0.35 \
+  --initial-temp-c 90 \
+  --ambient-temp-c -18 \
+  --area-m2 0.03 \
+  --freeze-deadline-s 21600 \
+  --htc-min 1 \
+  --htc-max 120 \
+  --json-output results/optimize.json
+```
 
-Challenges We Faced
-Scientific Accuracy:
-Incorporating freezing and phase changes.
-Handling edge cases like extreme temperatures or invalid inputs.
-Computational Efficiency:
-Simulations were slow for complex scenarios.
-No support for large-scale systems or multiple simulations.
-User Experience:
-Lack of an intuitive interface.
-No real-time feedback or customization options.
-Visualization:
-Static plots that didn’t engage or educate users.
-The Transformation
-Our goal evolved into building a robust, modular tool that tackled these issues head-on. Here's how we achieved it:
+Monte Carlo:
 
-1. Scientific Accuracy
-Improved thermodynamic models to handle phase transitions.
-Incorporated experimental data validation to ensure real-world relevance.
-2. Enhanced User Interaction
-Built a Graphical User Interface (GUI) with Tkinter, providing tooltips and explanations for every parameter.
-Allowed customization of inputs like mass, initial temperature, fridge conditions, and heat transfer coefficients.
-3. Broader Applicability
-Extended the application to simulate food preservation scenarios, industrial cooling processes, and energy-efficiency studies.
-Added support for multi-object simulations for broader use cases.
-4. Engaging Visualizations
-Added dynamic graphs for real-time temperature changes.
-Incorporated clustering and machine learning-based regression models to predict freezing times and categorize behavior patterns.
-5. Optimization and Performance
-Leveraged Python’s multiprocessing library for parallel simulations, significantly improving performance.
-Designed modular, reusable code for scalability and easier maintenance.
+```bash
+dotnet run --project DEThermo.Cli --configuration Release -- monte-carlo \
+  --name "Ceramic Mug Uncertainty" \
+  --mass-kg 0.35 \
+  --initial-temp-c 90 \
+  --ambient-temp-c -18 \
+  --area-m2 0.03 \
+  --htc-w-m2k 8 \
+  --target-temp-c -12 \
+  --deadline-s 43200 \
+  --samples 5000 \
+  --json-output results/monte_carlo_12h.json
+```
 
+## Sample input format
 
-#initial code
-Goals:
-Simulate cooling of coffee using Newton's Law of Cooling.
-Incorporate phase changes into the model.
-Challenges:
-Basic Errors in ODE Handling:
-Initial implementation of the solve_ivp function resulted in errors like "simulate.<locals>.lambda() takes 2 positional arguments but 4 were given."
-Phase transition conditions were hardcoded and didn’t accommodate real-world variability.
-User Interaction:
-Manual input via code variables made the program inaccessible for non-technical users.
-Static Visualization:
-Basic Matplotlib plots lacked interactivity and appeal.
-Solutions:
-Refactored solve_ivp event functions to correctly handle arguments.
-Added default values for inputs to avoid program crashes when parameters were missing.
-Used Matplotlib for basic plotting of simulation results.
+See `scenarios/sample_scenarios.json`.
 
-# Overall
+```json
+{
+  "target_temp_c": -12.0,
+  "duration_s": 21600.0,
+  "step_s": 60.0,
+  "scenarios": [
+    {
+      "name": "Ceramic Mug",
+      "mass_kg": 0.35,
+      "initial_temp_c": 90.0,
+      "ambient_temp_c": -18.0,
+      "area_m2": 0.03,
+      "htc_w_m2k": 8.0
+    }
+  ]
+}
+```
 
-main.py: The entry point with a Tkinter-based GUI. It manages user inputs, triggers simulations, and displays results.
-utils.py: Houses helper functions for parallel processing, ML model training, and clustering.
-visualization.py: Creates dynamic and engaging plots for simulation results.
+## Generated results
 
+This repo now includes executed outputs in `results/`:
 
+- `results/batch_report.md`
+- `results/batch_summary.csv`
+- `results/batch_summary.json`
+- `results/optimize.json`
+- `results/monte_carlo_12h.json`
+- `results/single_run.json`
+- `results/single_trajectory.csv`
+
+## Publish workflow
+
+```bash
+git add .
+git commit -m "Upgrade DE-Thermo to C# CLI with simulation, optimization, and Monte Carlo analysis"
+git push origin main
+```

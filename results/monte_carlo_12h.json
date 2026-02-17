@@ -1,0 +1,10 @@
+{
+  "samples": 5000,
+  "deadline_s": 43200,
+  "freeze_by_deadline_probability": 0.8236,
+  "target_by_deadline_probability": 0.6188,
+  "freeze_time_mean_s": 38566.06148827524,
+  "freeze_time_std_s": 5249.880443391232,
+  "target_time_mean_s": 42015.61392407664,
+  "target_time_std_s": 5795.146812704947
+}

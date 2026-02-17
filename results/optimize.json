@@ -1,0 +1,6 @@
+{
+  "freeze_deadline_s": 21600,
+  "min_htc_w_m2k": 14.064379489933849,
+  "achieved_freeze_s": 21600,
+  "feasible": true
+}

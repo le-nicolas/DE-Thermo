@@ -1,0 +1,39 @@
+{
+  "target_temp_c": -12.0,
+  "duration_s": 21600.0,
+  "step_s": 60.0,
+  "scenarios": [
+    {
+      "name": "Espresso Shot",
+      "mass_kg": 0.06,
+      "initial_temp_c": 92.0,
+      "ambient_temp_c": -18.0,
+      "area_m2": 0.012,
+      "htc_w_m2k": 10.0
+    },
+    {
+      "name": "Ceramic Mug",
+      "mass_kg": 0.35,
+      "initial_temp_c": 90.0,
+      "ambient_temp_c": -18.0,
+      "area_m2": 0.03,
+      "htc_w_m2k": 8.0
+    },
+    {
+      "name": "Vacuum Flask",
+      "mass_kg": 0.5,
+      "initial_temp_c": 85.0,
+      "ambient_temp_c": -18.0,
+      "area_m2": 0.025,
+      "htc_w_m2k": 3.5
+    },
+    {
+      "name": "Open Pan",
+      "mass_kg": 1.0,
+      "initial_temp_c": 70.0,
+      "ambient_temp_c": -25.0,
+      "area_m2": 0.09,
+      "htc_w_m2k": 14.0
+    }
+  ]
+}
